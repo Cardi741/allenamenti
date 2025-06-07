@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Training Planner Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        select, input, textarea {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .calendar-section {
+            margin-top: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .calendar-day {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .calendar-day:hover {
+            background: #e9ecef;
+        }
+
+        .calendar-day.delicate {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .calendar-day.difficult {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .calendar-day.rest {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .results-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .training-day {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .training-day h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .training-component {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #28a745;
+        }
+
+        .intensity-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            background: linear-gradient(to right, #28a745, #ffc107, #dc3545);
+            transition: width 0.3s;
+        }
+
+        .week-header {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            margin: 20px 0 10px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ Football Training Planner Pro</h1>
+            <p>Sistema Avanzato di Pianificazione Allenamenti Personalizzati</p>
+        </div>
+
+        <div class="form-section">
+            <h2>Configurazione Atleta</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="playerName">Nome Giocatore</label>
+                    <input type="text" id="playerName" placeholder="Es. Marco Rossi">
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Età</label>
+                    <select id="age">
+                        <option value="">Seleziona età</option>
+                        <option value="16-18">16-18 anni</option>
+                        <option value="19-22">19-22 anni</option>
+                        <option value="23-27">23-27 anni</option>
+                        <option value="28-32">28-32 anni</option>
+                        <option value="33+">33+ anni</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="position">Ruolo Principale</label>
+                    <select id="position">
+                        <option value="">Seleziona ruolo</option>
+                        <option value="portiere">Portiere</option>
+                        <option value="difensore-centrale">Difensore Centrale</option>
+                        <option value="terzino">Terzino</option>
+                        <option value="mediano">Mediano/Regista</option>
+                        <option value="centrocampista">Centrocampista</option>
+                        <option value="esterno">Esterno d'Attacco</option>
+                        <option value="trequartista">Trequartista</option>
+                        <option value="punta">Punta/Attaccante</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="level">Livello</label>
+                    <select id="level">
+                        <option value="">Seleziona livello</option>
+                        <option value="amatoriale">Amatoriale</option>
+                        <option value="dilettantistico">Dilettantistico</option>
+                        <option value="semi-professionistico">Semi-Professionistico</option>
+                        <option value="professionistico">Professionistico</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trainingDays">Giorni Allenamento/Settimana</label>
+                    <select id="trainingDays">
+                        <option value="">Seleziona giorni</option>
+                        <option value="2">2 giorni</option>
+                        <option value="3">3 giorni</option>
+                        <option value="4">4 giorni</option>
+                        <option value="5">5 giorni</option>
+                        <option value="6">6 giorni</option>
+                        <option value="7">7 giorni</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fitnessLevel">Condizione Fisica Attuale</label>
+                    <select id="fitnessLevel">
+                        <option value="">Seleziona condizione</option>
+                        <option value="scarsa">Scarsa (ripresa attività)</option>
+                        <option value="media">Media (allenamento regolare)</option>
+                        <option value="buona">Buona (ottima forma)</option>
+                        <option value="eccellente">Eccellente (atleta d'élite)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="injuryHistory">Storia Infortuni</label>
+                    <select id="injuryHistory">
+                        <option value="nessuno">Nessuno</option>
+                        <option value="ginocchio">Problemi Ginocchio</option>
+                        <option value="caviglia">Problemi Caviglia</option>
+                        <option value="schiena">Problemi Schiena</option>
+                        <option value="muscolare">Infortuni Muscolari</option>
+                        <option value="multipli">Multipli</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="objectives">Obiettivo Principale</label>
+                    <select id="objectives">
+                        <option value="">Seleziona obiettivo</option>
+                        <option value="resistenza">Migliorare Resistenza</option>
+                        <option value="velocita">Aumentare Velocità</option>
+                        <option value="forza">Sviluppare Forza</option>
+                        <option value="tecnica">Perfezionare Tecnica</option>
+                        <option value="esplosivita">Aumentare Esplosività</option>
+                        <option value="equilibrato">Sviluppo Equilibrato</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="calendar-section">
+                <h3>Pianificazione Mensile - Giorni Particolari</h3>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fff3cd; border: 1px solid #ffc107;"></div>
+                        <span>Giorno Delicato (partita/evento importante)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f8d7da; border: 1px solid #dc3545;"></div>
+                        <span>Giorno Difficile (impegno moderato)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #d1ecf1; border: 1px solid #17a2b8;"></div>
+                        <span>Riposo Programmato</span>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+
+            <button class="generate-btn" onclick="generateTrainingPlan()">
+                🚀 Genera Piano di Allenamento Personalizzato
+            </button>
+        </div>
+
+        <div id="results" class="results-section" style="display: none;">
+            <h2>Il Tuo Piano di Allenamento Personalizzato</h2>
+            <div id="trainingPlan"></div>
+            <div id="statistics"></div>
+        </div>
+    </div>
+
+    <script>
+        // Algoritmo Avanzato di Pianificazione Allenamenti Calcistici
+        class FootballTrainingPlanner {
+            constructor() {
+                this.specialDays = {
+                    delicate: [],
+                    difficult: [],
+                    rest: []
+                };
+                this.currentMonth = new Date().getMonth();
+                this.currentYear = new Date().getFullYear();
+                this.initializeCalendar();
+            }
+
+            // Configurazioni base per ruoli
+            getRoleConfiguration(position) {
+                const configs = {
+                    'portiere': {
+                        technicaWeight: 0.35,
+                        fisicoWeight: 0.35,
+                        velocitaWeight: 0.20,
+                        tatticsWeight: 0.10,
+                        specificFocus: ['riflessi', 'agilità', 'coordinazione', 'upper_body'],
+                        intensityModifier: 0.85
+                    },
+                    'difensore-centrale': {
+                        technicaWeight: 0.30,
+                        fisicoWeight: 0.40,
+                        velocitaWeight: 0.20,
+                        tatticsWeight: 0.10,
+                        specificFocus: ['forza', 'duelli_aerei', 'resistenza', 'core'],
+                        intensityModifier: 0.95
+                    },
+                    'terzino': {
+                        technicaWeight: 0.35,
+                        fisicoWeight: 0.30,
+                        velocitaWeight: 0.25,
+                        tatticsWeight: 0.10,
+                        specificFocus: ['velocità', 'resistenza', 'cross', 'leg_strength'],
+                        intensityModifier: 1.05
+                    },
+                    'mediano': {
+                        technicaWeight: 0.40,
+                        fisicoWeight: 0.30,
+                        velocitaWeight: 0.20,
+                        tatticsWeight: 0.10,
+                        specificFocus: ['passaggio', 'visione', 'resistenza', 'core'],
+                        intensityModifier: 0.90
+                    },
+                    'centrocampista': {
+                        technicaWeight: 0.45,
+                        fisicoWeight: 0.25,
+                        velocitaWeight: 0.20,
+                        tatticsWeight: 0.10,
+                        specificFocus: ['tecnica', 'resistenza', 'versatilità', 'coordinazione'],
+                        intensityModifier: 1.0
+                    },
+                    'esterno': {
+                        technicaWeight: 0.40,
+                        fisicoWeight: 0.25,
+                        velocitaWeight: 0.30,
+                        tatticsWeight: 0.05,
+                        specificFocus: ['velocità', 'dribbling', 'cross', 'esplosività'],
+                        intensityModifier: 1.1
+                    },
+                    'trequartista': {
+                        technicaWeight: 0.50,
+                        fisicoWeight: 0.20,
+                        velocitaWeight: 0.25,
+                        tatticsWeight: 0.05,
+                        specificFocus: ['tecnica', 'creatività', 'tiro', 'agilità'],
+                        intensityModifier: 0.95
+                    },
+                    'punta': {
+                        technicaWeight: 0.40,
+                        fisicoWeight: 0.30,
+                        velocitaWeight: 0.25,
+                        tatticsWeight: 0.05,
+                        specificFocus: ['finalizzazione', 'forza', 'velocità', 'coordinazione'],
+                        intensityModifier: 1.0
+                    }
+                };
+                return configs[position] || configs['centrocampista'];
+            }
+
+            // Adattamenti per età
+            getAgeModifiers(ageGroup) {
+                const modifiers = {
+                    '16-18': {
+                        recoveryTime: 0.8,
+                        intensityLimit: 0.85,
+                        volumeModifier: 0.9,
+                        focusAreas: ['tecnica', 'coordinazione', 'sviluppo_base']
+                    },
+                    '19-22': {
+                        recoveryTime: 0.9,
+                        intensityLimit: 1.0,
+                        volumeModifier: 1.0,
+                        focusAreas: ['sviluppo_completo', 'forza', 'velocità']
+                    },
+                    '23-27': {
+                        recoveryTime: 1.0,
+                        intensityLimit: 1.0,
+                        volumeModifier: 1.0,
+                        focusAreas: ['performance_peak', 'specializzazione']
+                    },
+                    '28-32': {
+                        recoveryTime: 1.2,
+                        intensityLimit: 0.95,
+                        volumeModifier: 0.95,
+                        focusAreas: ['mantenimento', 'prevenzione', 'esperienza']
+                    },
+                    '33+': {
+                        recoveryTime: 1.4,
+                        intensityLimit: 0.85,
+                        volumeModifier: 0.85,
+                        focusAreas: ['prevenzione', 'longevità', 'saggezza_tattica']
+                    }
+                };
+                return modifiers[ageGroup] || modifiers['23-27'];
+            }
+
+            // Adattamenti per livello
+            getLevelModifiers(level) {
+                const modifiers = {
+                    'amatoriale': {
+                        intensityBase: 0.7,
+                        volumeBase: 0.8,
+                        technicaFocus: 0.6,
+                        recoveryEmphasis: 1.2
+                    },
+                    'dilettantistico': {
+                        intensityBase: 0.8,
+                        volumeBase: 0.9,
+                        technicaFocus: 0.7,
+                        recoveryEmphasis: 1.1
+                    },
+                    'semi-professionistico': {
+                        intensityBase: 0.9,
+                        volumeBase: 1.0,
+                        technicaFocus: 0.8,
+                        recoveryEmphasis: 1.0
+                    },
+                    'professionistico': {
+                        intensityBase: 1.0,
+                        volumeBase: 1.1,
+                        technicaFocus: 0.9,
+                        recoveryEmphasis: 0.9
+                    }
+                };
+                return modifiers[level] || modifiers['dilettantistico'];
+            }
+
+            // Algoritmo principale di generazione del piano
+            generatePlan(playerData) {
+                const roleConfig = this.getRoleConfiguration(playerData.position);
+                const ageModifiers = this.getAgeModifiers(playerData.age);
+                const levelModifiers = this.getLevelModifiers(playerData.level);
+                
+                // Calcolo intensità base personalizzata
+                const baseIntensity = this.calculateBaseIntensity(playerData, roleConfig, ageModifiers, levelModifiers);
+                
+                // Generazione calendario di 4 settimane
+                const weeklyPlans = [];
+                
+                for (let week = 1; week <= 4; week++) {
+                    const weekPlan = this.generateWeekPlan(
+                        playerData, 
+                        roleConfig, 
+                        ageModifiers, 
+                        levelModifiers, 
+                        baseIntensity, 
+                        week
+                    );
+                    weeklyPlans.push(weekPlan);
+                }
+
+                return {
+                    playerProfile: this.generatePlayerProfile(playerData, roleConfig),
+                    weeklyPlans: weeklyPlans,
+                    statistics: this.calculatePlanStatistics(weeklyPlans),
+                    recommendations: this.generateRecommendations(playerData, roleConfig)
+                };
+            }
+
+            calculateBaseIntensity(playerData, roleConfig, ageModifiers, levelModifiers) {
+                let intensity = 0.7; // Base
+                
+                // Adattamenti per condizione fisica
+                const fitnessModifiers = {
+                    'scarsa': 0.6,
+                    'media': 0.8,
+                    'buona': 1.0,
+                    'eccellente': 1.2
+                };
+                intensity *= fitnessModifiers[playerData.fitnessLevel] || 0.8;
+                
+                // Adattamenti per età e livello
+                intensity *= ageModifiers.intensityLimit;
+                intensity *= levelModifiers.intensityBase;
+                intensity *= roleConfig.intensityModifier;
+                
+                return Math.min(intensity, 1.0);
+            }
+
+            generateWeekPlan(playerData, roleConfig, ageModifiers, levelModifiers, baseIntensity, weekNumber) {
+                const trainingDays = parseInt(playerData.trainingDays);
+                const weekPlan = {
+                    weekNumber: weekNumber,
+                    days: []
+                };
+
+                // Pattern di intensità progressiva
+                const intensityProgression = this.getIntensityProgression(weekNumber);
+                
+                for (let day = 1; day <= trainingDays; day++) {
+                    const dayIntensity = baseIntensity * intensityProgression[day - 1] || baseIntensity;
+                    const dayPlan = this.generateDayPlan(
+                        playerData, 
+                        roleConfig, 
+                        dayIntensity, 
+                        day, 
+                        trainingDays,
+                        weekNumber
+                    );
+                    weekPlan.days.push(dayPlan);
+                }
+
+                return weekPlan;
+            }
+
+            getIntensityProgression(weekNumber) {
+                // Progressioni diverse per settimana
+                const progressions = {
+                    1: [0.7, 0.8, 0.6, 0.9, 0.7, 0.5, 0.6], // Settimana di adattamento
+                    2: [0.8, 0.9, 0.7, 1.0, 0.8, 0.6, 0.7], // Incremento graduale
+                    3: [0.9, 1.0, 0.8, 1.0, 0.9, 0.6, 0.8], // Settimana intensa
+                    4: [0.7, 0.8, 0.6, 0.9, 0.7, 0.5, 0.6]  // Settimana di scarico
+                };
+                return progressions[weekNumber] || progressions[2];
+            }
+
+            generateDayPlan(playerData, roleConfig, intensity, dayNumber, totalDays, weekNumber) {
+                const dayPlan = {
+                    dayNumber: dayNumber,
+                    intensity: Math.round(intensity * 100),
+                    components: []
+                };
+
+                // Controllo giorni speciali
+                const isSpecialDay = this.checkSpecialDay(weekNumber, dayNumber);
+                if (isSpecialDay) {
+                    return this.adjustForSpecialDay(dayPlan, isSpecialDay);
+                }
+
+                // Componenti base sempre presenti
+                dayPlan.components.push(this.generateWarmUp(intensity));
+                dayPlan.components.push(this.generateTechnicalWork(playerData, roleConfig, intensity, dayNumber));
+                
+                // Componenti specifiche basate sul giorno e ruolo
+                if (dayNumber % 2 === 1) { // Giorni dispari
+                    dayPlan.components.push(this.generateSpeedWork(playerData, roleConfig, intensity));
+                    dayPlan.components.push(this.generateStrengthWork(playerData, roleConfig, intensity, 'lower'));
+                } else { // Giorni pari
+                    dayPlan.components.push(this.generateEnduranceWork(playerData, roleConfig, intensity));
+                    dayPlan.components.push(this.generateStrengthWork(playerData, roleConfig, intensity, 'upper'));
+                }
+
+                // Core sempre presente
+                dayPlan.components.push(this.generateCoreWork(intensity));
+                
+                // Finalizzazione
+                dayPlan.components.push(this.generateCoolDown(intensity));
+
+                return dayPlan;
+            }
+
+            generateWarmUp(intensity) {
+                const exercises = [
+                    'Corsa leggera 8-10 min',
+                    'Mobilità articolare dinamica',
+                    'Attivazione muscolare specifica',
+                    'Skip e corsa calciata',
+                    'Accelerazioni progressive'
+                ];
+                
+                return {
+                    type: 'Riscaldamento',
+                    duration: '15-20 min',
+                    intensity: Math.max(30, intensity * 0.4),
+                    exercises: exercises,
+                    notes: 'Fondamentale per prevenire infortuni'
+                };
+            }
+
+            generateTechnicalWork(playerData, roleConfig, intensity, dayNumber) {
+                const roleSpecificExercises = {
+                    'portiere': [
+                        'Prese e parate specifiche',
+                        'Lavoro sui riflessi',
+                        'Uscite e posizionamento',
+                        'Rilanci con mani e piedi'
+                    ],
+                    'difensore-centrale': [
+                        'Duelli aerei',
+                        'Marcatura e anticipo',
+                        'Passaggi lunghi e corti',
+                        'Gioco di testa'
+                    ],
+                    'terzino': [
+                        'Cross e sovrapposizioni',
+                        'Difesa 1vs1',
+                        'Passaggi in corsa',
+                        'Cambi di gioco'
+                    ],
+                    'mediano': [
+                        'Passaggi corti e lunghi',
+                        'Visione di gioco',
+                        'Contrasti e recuperi',
+                        'Smarcamento'
+                    ],
+                    'centrocampista': [
+                        'Controllo e passaggio',
+                        'Inserimenti',
+                        'Tiri da fuori',
+                        'Gioco a due tocchi'
+                    ],
+                    'esterno': [
+                        'Dribbling e 1vs1',
+                        'Cross e tiri',
+                        'Velocità con palla',
+                        'Cambi di direzione'
+                    ],
+                    'trequartista': [
+                        'Creatività e assist',
+                        'Tiri da varie posizioni',
+                        'Controlli orientati',
+                        'Gioco nello stretto'
+                    ],
+                    'punta': [
+                        'Finalizzazione',
+                        'Gioco spalle alla porta',
+                        'Movimenti in area',
+                        'Colpi di testa'
+                    ]
+                };
+
+                const exercises = roleSpecificExercises[playerData.position] || roleSpecificExercises['centrocampista'];
+                
+                return {
+                    type: 'Lavoro Tecnico',
+                    duration: '25-35 min',
+                    intensity: intensity * 0.7,
+                    exercises: exercises,
+                    focus: roleConfig.specificFocus[0],
+                    notes: `Specifico per ${playerData.position}`
+                };
+            }
+
+            generateSpeedWork(playerData, roleConfig, intensity) {
+                const exercises = [
+                    'Scatti 10-20-30 metri',
+                    'Cambi di direzione',
+                    'Accelerazioni con palla',
+                    'Sprint in salita',
+                    'Lavoro pliometrico'
+                ];
+
+                return {
+                    type: 'Velocità e Esplosività',
+                    duration: '20-25 min',
+                    intensity: intensity * 0.9,
+                    exercises: exercises,
+                    sets: '4-6 serie',
+                    rest: '90-120 sec tra serie',
+                    notes: 'Focus su esplosività e velocità massima'
+                };
+            }
+
+            generateEnduranceWork(playerData, roleConfig, intensity) {
+                const exercises = [
+                    'Corsa intervallata',
+                    'Fartlek calcistico',
+                    'Circuiti aerobici',
+                    'Corsa con cambi di ritmo',
+                    'Lavoro sulla soglia anaerobica'
+                ];
+
+                return {
+                    type: 'Resistenza',
+                    duration: '25-30 min',
+                    intensity: intensity * 0.8,
+                    exercises: exercises,
+                    heartRate: '75-85% FC Max',
+                    notes: 'Sviluppo capacità aerobica e anaerobica'
+                };
+            }
+
+            generateStrengthWork(playerData, roleConfig, intensity, focus) {
+                const upperBodyExercises = [
+                    'Piegamenti sulle braccia',
+                    'Trazioni alla sbarra',
+                    'Spinte con manubri',
+                    'Rematore',
+                    'Plank laterali'
+                ];
+
+                const lowerBodyExercises = [
+                    'Squat e varianti',
+                    'Affondi multidirezionali',
+                    'Stacchi',
+                    'Salti monopodalici',
+                    'Balzi e pliometria'
+                ];
+
+                const exercises = focus === 'upper' ? upperBodyExercises : lowerBodyExercises;
+                
+                return {
+                    type: `Forza ${focus === 'upper' ? 'Parte Superiore' : 'Gambe'}`,
+                    duration: '20-25 min',
+                    intensity: intensity * 0.85,
+                    exercises: exercises,
+                    sets: '3-4 serie x 8-12 ripetizioni',
+                    rest: '60-90 sec tra serie',
+                    notes: `Focus su ${focus === 'upper' ? 'stabilità core e forza superiore' : 'potenza delle gambe'}`
+                };
+            }
+
+            generateCoreWork(intensity) {
+                const exercises = [
+                    'Plank e varianti',
+                    'Crunch bicicletta',
+                    'Russian twist',
+                    'Dead bug',
+                    'Mountain climber'
+                ];
+
+                return {
+                    type: 'Core e Stabilità',
+                    duration: '10-15 min',
+                    intensity: intensity * 0.7,
+                    exercises: exercises,
+                    sets: '3 serie x 30-45 sec',
+                    notes: 'Essenziale per stabilità e prevenzione infortuni'
+                };
+            }
+
+            generateCoolDown(intensity) {
+                const exercises = [
+                    'Corsa leggera defaticante',
+                    'Stretching statico',
+                    'Mobilità articolare',
+                    'Respirazione controllata',
+                    'Auto-massaggio con foam roller'
+                ];
+
+                return {
+                    type: 'Defaticamento',
+                    duration: '10-15 min',
+                    intensity: intensity * 0.3,
+                    exercises: exercises,
+                    notes: 'Favorisce il recupero e riduce tensioni muscolari'
+                };
+            }
+
+            checkSpecialDay(weekNumber, dayNumber) {
+                // Logica per controllare giorni speciali nel calendario
+                const dayIndex = (weekNumber - 1) * 7 + dayNumber;
+                
+                if (this.specialDays.delicate.includes(dayIndex)) return 'delicate';
+                if (this.specialDays.difficult.includes(dayIndex)) return 'difficult';
+                if (this.specialDays.rest.includes(dayIndex)) return 'rest';
+                
+                return null;
+            }
+
+            adjustForSpecialDay(dayPlan, specialType) {
+                switch (specialType) {
+                    case 'delicate':
+                        return {
+                            ...dayPlan,
+                            intensity: 0,
+                            components: [{
+                                type: 'Riposo Completo',
+                                duration: 'Tutto il giorno',
+                                intensity: 0,
+                                exercises: ['Riposo assoluto'],
+                                notes: 'Giorno di partita o evento importante - recupero totale'
+                            }]
+                        };
+                    
+                    case 'difficult':
+                        return {
+                            ...dayPlan,
+                            intensity: 30,
+                            components: [
+                                {
+                                    type: 'Allenamento Leggero',
+                                    duration: '20-30 min',
+                                    intensity: 30,
+                                    exercises: [
+                                        'Stretching dinamico',
+                                        'Lavoro tecnico leggero',
+                                        'Mobilità articolare',
+                                        'Esercizi di attivazione'
+                                    ],
+                                    notes: 'Giorno impegnativo - allenamento ridotto'
+                                }
+                            ]
+                        };
+                    
+                    case 'rest':
+                        return {
+                            ...dayPlan,
+                            intensity: 20,
+                            components: [{
+                                type: 'Recupero Attivo',
+                                duration: '15-20 min',
+                                intensity: 20,
+                                exercises: [
+                                    'Camminata leggera',
+                                    'Stretching statico',
+                                    'Yoga o Pilates',
+                                    'Respirazione profonda'
+                                ],
+                                notes: 'Giorno di recupero programmato'
+                            }]
+                        };
+                    
+                    default:
+                        return dayPlan;
+                }
+            }
+
+            generatePlayerProfile(playerData, roleConfig) {
+                return {
+                    name: playerData.playerName || 'Giocatore',
+                    age: playerData.age,
+                    position: playerData.position,
+                    level: playerData.level,
+                    trainingDays: playerData.trainingDays,
+                    fitnessLevel: playerData.fitnessLevel,
+                    objectives: playerData.objectives,
+                    injuryHistory: playerData.injuryHistory,
+                    roleSpecifics: roleConfig.specificFocus,
+                    recommendations: this.generatePersonalizedRecommendations(playerData, roleConfig)
+                };
+            }
+
+            generatePersonalizedRecommendations(playerData, roleConfig) {
+                const recommendations = [];
+                
+                // Raccomandazioni basate sull'età
+                if (playerData.age === '16-18') {
+                    recommendations.push('Focus su sviluppo tecnico e coordinativo');
+                    recommendations.push('Evitare sovraccarichi eccessivi');
+                } else if (playerData.age === '33+') {
+                    recommendations.push('Maggiore attenzione al recupero');
+                    recommendations.push('Prevenzione infortuni prioritaria');
+                }
+
+                // Raccomandazioni per ruolo
+                if (playerData.position === 'portiere') {
+                    recommendations.push('Lavoro specifico su riflessi e agilità');
+                } else if (playerData.position === 'terzino') {
+                    recommendations.push('Bilanciare resistenza e velocità');
+                }
+
+                // Raccomandazioni per condizione fisica
+                if (playerData.fitnessLevel === 'scarsa') {
+                    recommendations.push('Progressione graduale dell\'intensità');
+                    recommendations.push('Focus iniziale su base aerobica');
+                }
+
+                // Raccomandazioni per infortuni
+                if (playerData.injuryHistory !== 'nessuno') {
+                    recommendations.push('Esercizi preventivi specifici');
+                    recommendations.push('Maggiore attenzione al riscaldamento');
+                }
+
+                return recommendations;
+            }
+
+            calculatePlanStatistics(weeklyPlans) {
+                let totalTrainingTime = 0;
+                let avgIntensity = 0;
+                let technicaPercentage = 0;
+                let fisicoPercentage = 0;
+                let totalDays = 0;
+
+                weeklyPlans.forEach(week => {
+                    week.days.forEach(day => {
+                        totalDays++;
+                        avgIntensity += day.intensity;
+                        
+                        day.components.forEach(component => {
+                            const duration = this.parseDuration(component.duration);
+                            totalTrainingTime += duration;
+                            
+                            if (component.type.includes('Tecnic')) {
+                                technicaPercentage += duration;
+                            } else if (component.type.includes('Forza') || 
+                                     component.type.includes('Velocità') || 
+                                     component.type.includes('Resistenza')) {
+                                fisicoPercentage += duration;
+                            }
+                        });
+                    });
+                });
+
+                avgIntensity = Math.round(avgIntensity / totalDays);
+                technicaPercentage = Math.round((technicaPercentage / totalTrainingTime) * 100);
+                fisicoPercentage = Math.round((fisicoPercentage / totalTrainingTime) * 100);
+
+                return {
+                    totalTrainingTime: Math.round(totalTrainingTime),
+                    avgIntensity: avgIntensity,
+                    technicaPercentage: technicaPercentage,
+                    fisicoPercentage: fisicoPercentage,
+                    totalSessions: totalDays,
+                    avgSessionTime: Math.round(totalTrainingTime / totalDays)
+                };
+            }
+
+            parseDuration(duration) {
+                // Estrae i minuti dalla stringa duration (es. "20-25 min" -> 22.5)
+                const matches = duration.match(/(\d+)(?:-(\d+))?\s*min/);
+                if (matches) {
+                    const min1 = parseInt(matches[1]);
+                    const min2 = matches[2] ? parseInt(matches[2]) : min1;
+                    return (min1 + min2) / 2;
+                }
+                return 20; // default
+            }
+
+            generateRecommendations(playerData, roleConfig) {
+                const recommendations = [
+                    {
+                        category: 'Nutrizione',
+                        items: [
+                            'Mantieni idratazione costante (2-3L acqua/giorno)',
+                            'Consuma carboidrati complessi pre-allenamento',
+                            'Proteine entro 30 min post-allenamento',
+                            'Evita cibi processati nei giorni di allenamento'
+                        ]
+                    },
+                    {
+                        category: 'Recupero',
+                        items: [
+                            'Dormi 7-9 ore per notte',
+                            'Stretching quotidiano 10-15 min',
+                            'Bagno ghiacciato post-allenamento intenso',
+                            'Massaggio settimanale se possibile'
+                        ]
+                    },
+                    {
+                        category: 'Monitoraggio',
+                        items: [
+                            'Tieni un diario degli allenamenti',
+                            'Monitora la frequenza cardiaca a riposo',
+                            'Valuta il livello di fatica soggettiva',
+                            'Controlla peso corporeo settimanalmente'
+                        ]
+                    }
+                ];
+
+                return recommendations;
+            }
+
+            initializeCalendar() {
+                const calendar = document.getElementById('calendarGrid');
+                if (!calendar) return;
+
+                // Genera calendario del mese corrente
+                const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+                
+                for (let day = 1; day <= Math.min(daysInMonth, 31); day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.textContent = day;
+                    dayElement.dataset.day = day;
+                    
+                    dayElement.addEventListener('click', () => this.toggleDayType(dayElement, day));
+                    calendar.appendChild(dayElement);
+                }
+            }
+
+            toggleDayType(element, day) {
+                const currentClass = element.className;
+                
+                if (currentClass.includes('delicate')) {
+                    element.className = 'calendar-day difficult';
+                    this.specialDays.delicate = this.specialDays.delicate.filter(d => d !== day);
+                    this.specialDays.difficult.push(day);
+                } else if (currentClass.includes('difficult')) {
+                    element.className = 'calendar-day rest';
+                    this.specialDays.difficult = this.specialDays.difficult.filter(d => d !== day);
+                    this.specialDays.rest.push(day);
+                } else if (currentClass.includes('rest')) {
+                    element.className = 'calendar-day';
+                    this.specialDays.rest = this.specialDays.rest.filter(d => d !== day);
+                } else {
+                    element.className = 'calendar-day delicate';
+                    this.specialDays.delicate.push(day);
+                }
+            }
+        }
+
+        // Inizializzazione del sistema
+        const trainingPlanner = new FootballTrainingPlanner();
+
+        function generateTrainingPlan() {
+            // Raccolta dati dal form
+            const playerData = {
+                playerName: document.getElementById('playerName').value,
+                age: document.getElementById('age').value,
+                position: document.getElementById('position').value,
+                level: document.getElementById('level').value,
+                trainingDays: document.getElementById('trainingDays').value,
+                fitnessLevel: document.getElementById('fitnessLevel').value,
+                injuryHistory: document.getElementById('injuryHistory').value,
+                objectives: document.getElementById('objectives').value
+            };
+
+            // Validazione dati
+            if (!validatePlayerData(playerData)) {
+                alert('Compila tutti i campi obbligatori!');
+                return;
+            }
+
+            // Generazione piano
+            const trainingPlan = trainingPlanner.generatePlan(playerData);
+            
+            // Visualizzazione risultati
+            displayTrainingPlan(trainingPlan);
+            
+            // Scroll ai risultati
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function validatePlayerData(data) {
+            const required = ['age', 'position', 'level', 'trainingDays', 'fitnessLevel'];
+            return required.every(field => data[field] && data[field] !== '');
+        }
+
+        function displayTrainingPlan(plan) {
+            const resultsDiv = document.getElementById('results');
+            const trainingPlanDiv = document.getElementById('trainingPlan');
+            const statisticsDiv = document.getElementById('statistics');
+            
+            resultsDiv.style.display = 'block';
+
+            // Profilo giocatore
+            let html = `
+                <div class="training-day">
+                    <h3>👤 Profilo Giocatore</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div><strong>Nome:</strong> ${plan.playerProfile.name}</div>
+                        <div><strong>Età:</strong> ${plan.playerProfile.age}</div>
+                        <div><strong>Ruolo:</strong> ${plan.playerProfile.position}</div>
+                        <div><strong>Livello:</strong> ${plan.playerProfile.level}</div>
+                        <div><strong>Giorni Allenamento:</strong> ${plan.playerProfile.trainingDays}/settimana</div>
+                        <div><strong>Condizione:</strong> ${plan.playerProfile.fitnessLevel}</div>
+                    </div>
+                </div>
+            `;
+
+            // Piano settimanale
+            plan.weeklyPlans.forEach(week => {
+                html += `<div class="week-header">🗓️ SETTIMANA ${week.weekNumber}</div>`;
+                
+                week.days.forEach(day => {
+                    html += `
+                        <div class="training-day">
+                            <h3>Giorno ${day.dayNumber} - Intensità: ${day.intensity}%</h3>
+                            <div class="intensity-bar">
+                                <div class="intensity-fill" style="width: ${day.intensity}%"></div>
+                            </div>
+                    `;
+                    
+                    day.components.forEach(component => {
+                        html += `
+                            <div class="training-component">
+                                <h4>🎯 ${component.type}</h4>
+                                <p><strong>Durata:</strong> ${component.duration}</p>
+                                <p><strong>Intensità:</strong> ${Math.round(component.intensity)}%</p>
+                                <div><strong>Esercizi:</strong></div>
+                                <ul>
+                                    ${component.exercises.map(ex => `<li>${ex}</li>`).join('')}
+                                </ul>
+                                ${component.sets ? `<p><strong>Serie:</strong> ${component.sets}</p>` : ''}
+                                ${component.rest ? `<p><strong>Recupero:</strong> ${component.rest}</p>` : ''}
+                                ${component.heartRate ? `<p><strong>FC Target:</strong> ${component.heartRate}</p>` : ''}
+                                <p><em>${component.notes}</em></p>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                });
+            });
+
+            trainingPlanDiv.innerHTML = html;
+
+            // Statistiche
+            const stats = plan.statistics;
+            statisticsDiv.innerHTML = `
+                <h3>📊 Statistiche del Piano</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalSessions}</div>
+                        <div>Sessioni Totali</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalTrainingTime}h</div>
+                        <div>Ore di Allenamento</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.avgIntensity}%</div>
+                        <div>Intensità Media</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.technicaPercentage}%</div>
+                        <div>Focus Tecnico</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.fisicoPercentage}%</div>
+                        <div>Focus Fisico</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.avgSessionTime}min</div>
+                        <div>Durata Media Sessione</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>💡 Raccomandazioni Personalizzate</h3>
+                    ${plan.recommendations.map(rec => `
+                        <div class="training-component">
+                            <h4>${rec.category}</h4>
+                            <ul>
+                                ${rec.items.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Funzioni di utilità
+        function exportPlan() {
+            // Funzionalità per esportare il piano in PDF o Excel
+            alert('Funzione di export in sviluppo!');
+        }
+
+        function savePlan() {
+            // Salvataggio del piano per uso futuro
+            const planData = {
+                timestamp: new Date().toISOString(),
+                playerData: getCurrentPlayerData(),
+                specialDays: trainingPlanner.specialDays
+            };
+            
+            // Salvataggio in memoria (in un'implementazione reale si userebbe un database)
+            console.log('Piano salvato:', planData);
+            alert('Piano salvato con successo!');
+        }
+
+        function getCurrentPlayerData() {
+            return {
+                playerName: document.getElementById('playerName').value,
+                age: document.getElementById('age').value,
+                position: document.getElementById('position').value,
+                level: document.getElementById('level').value,
+                trainingDays: document.getElementById('trainingDays').value,
+                fitnessLevel: document.getElementById('fitnessLevel').value,
+                injuryHistory: document.getElementById('injuryHistory').value,
+                objectives: document.getElementById('objectives').value
+            };
+        }
+
+        // Animazioni e effetti UI
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animazione fade-in per le sezioni
+            const sections = document.querySelectorAll('.form-section, .results-section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'all 0.6s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Tooltip per le opzioni
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    this.style.borderColor = '#28a745';
+                    setTimeout(() => {
+                        this.style.borderColor = '#ddd';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
